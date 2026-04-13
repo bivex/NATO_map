@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тактична карта — знаки НАТО (APP-6)</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Top Toolbar -->
+<header class="toolbar">
+    <div class="toolbar-left">
+        <span class="toolbar-title">&#9876; Тактична карта НАТО</span>
+    </div>
+    <div class="toolbar-center">
+        <button class="tool-btn" id="btnSelect" title="Вибір (V)" data-tool="select">&#9995; Вибір</button>
+        <button class="tool-btn" id="btnPan" title="Переміщення (H)" data-tool="pan">&#128270; Переміщення</button>
+        <button class="tool-btn" id="btnLine" title="Лінія (L)" data-tool="line">&#10174; Лінія</button>
+        <button class="tool-btn" id="btnArea" title="Зона (A)" data-tool="area">&#9634; Зона</button>
+        <button class="tool-btn" id="btnText" title="Текст (T)" data-tool="text">T Текст</button>
+        <button class="tool-btn" id="btnEraser" title="Стерти (E)" data-tool="eraser">&#128465; Стерти</button>
+    </div>
+    <div class="toolbar-right">
+        <button class="action-btn" id="btnUndo" title="Скасувати (Ctrl+Z)">&#8630;</button>
+        <button class="action-btn" id="btnClear" title="Очистити все">&#128465; Очистити</button>
+        <button class="action-btn" id="btnGrid" title="Сітка">&#9638; Сітка</button>
+        <button class="action-btn" id="btnDrone" title="БпАК взвод — Куп'янськ" style="border-color:#e040fb;color:#e040fb;">&#9992; БпАК Куп'янськ</button>
+        <button class="action-btn" id="btnKyiv" title="Оборона Києва" style="border-color:#ffc107;color:#ffc107;">&#9733; Оборона Києва</button>
+        <button class="action-btn" id="btnDefense" title="Оборона Харкова" style="border-color:#4caf50;color:#4caf50;">&#9876; Оборона Харкова</button>
+        <button class="action-btn export-btn" id="btnExport" title="Експорт PNG">&#128190; PNG</button>
+    </div>
+</header>
+
+<div class="app-layout">
+
+    <!-- Left Sidebar: Symbol Palette -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Знаки НАТО</h3>
+            <button class="sidebar-toggle" id="sidebarToggle">&#9664;</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="symbolSearch" placeholder="Пошук знаку..." autocomplete="off">
+        </div>
+
+        <!-- Symbol Categories -->
+        <div class="symbol-categories" id="symbolCategories">
+
+            <div class="category">
+                <div class="category-header" data-cat="units">
+                    <span class="cat-arrow">&#9654;</span> Сухопутні війська
+                </div>
+                <div class="category-items" id="cat-units">
+                    <div class="symbol-item" data-symbol="infantry" title="Піхота">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><line x1="5" y1="5" x2="55" y2="45" stroke="#40c4ff" stroke-width="1.5"/><line x1="55" y1="5" x2="5" y2="45" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Піхота</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="mech_infantry" title="Механізована піхота">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><line x1="5" y1="5" x2="55" y2="45" stroke="#40c4ff" stroke-width="1.5"/><line x1="55" y1="5" x2="5" y2="45" stroke="#40c4ff" stroke-width="1.5"/><ellipse cx="30" cy="25" rx="18" ry="10" fill="none" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Мех. піхота</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="armor" title="Бронетехніка / Танки">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><ellipse cx="30" cy="25" rx="18" ry="12" fill="none" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Бронетехніка</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="recon" title="Розвідка">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><line x1="5" y1="5" x2="55" y2="45" stroke="#40c4ff" stroke-width="1.5"/><line x1="55" y1="5" x2="5" y2="45" stroke="#40c4ff" stroke-width="1.5"/><line x1="30" y1="5" x2="30" y2="45" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Розвідка</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="artillery" title="Артилерія">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><circle cx="30" cy="25" r="18" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><circle cx="30" cy="25" r="5" fill="#40c4ff"/></svg>
+                        <span>Артилерія</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="air_defense" title="ППО">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><line x1="30" y1="45" x2="30" y2="12" stroke="#40c4ff" stroke-width="2"/><polygon points="30,5 22,20 38,20" fill="#40c4ff"/></svg>
+                        <span>ППО</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="engineer" title="Інженерні війська">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><line x1="5" y1="5" x2="30" y2="45" stroke="#40c4ff" stroke-width="1.5"/><line x1="55" y1="5" x2="30" y2="45" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Інженери</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="signal" title="Зв'язок">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><path d="M20,38 Q20,15 30,12 Q40,15 40,38" fill="none" stroke="#40c4ff" stroke-width="2"/><line x1="15" y1="38" x2="45" y2="38" stroke="#40c4ff" stroke-width="2"/></svg>
+                        <span>Зв'язок</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="medical" title="Медицина">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><line x1="30" y1="12" x2="30" y2="38" stroke="#40c4ff" stroke-width="3"/><line x1="18" y1="25" x2="42" y2="25" stroke="#40c4ff" stroke-width="3"/></svg>
+                        <span>Медицина</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="supply" title="Тил / Постачання">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#40c4ff" fill-opacity="0.3" stroke="#40c4ff" stroke-width="2"/><circle cx="30" cy="25" r="6" fill="none" stroke="#40c4ff" stroke-width="1.5"/><line x1="5" y1="25" x2="24" y2="25" stroke="#40c4ff" stroke-width="1.5"/><line x1="36" y1="25" x2="55" y2="25" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Тил</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <div class="category-header" data-cat="size">
+                    <span class="cat-arrow">&#9654;</span> Розмір підрозділу
+                </div>
+                <div class="category-items" id="cat-size">
+                    <div class="symbol-item size-item" data-symbol="team" title="Команда / Відділення">
+                        <svg viewBox="0 0 50 30" class="symbol-svg"><circle cx="25" cy="15" r="4" fill="#40c4ff"/><line x1="15" y1="25" x2="25" y2="15" stroke="#40c4ff" stroke-width="1.5"/><circle cx="25" cy="15" r="10" fill="none" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Відділення</span>
+                    </div>
+                    <div class="symbol-item size-item" data-symbol="squad" title="Взвод">
+                        <svg viewBox="0 0 50 30" class="symbol-svg"><circle cx="25" cy="15" r="4" fill="#40c4ff"/><line x1="15" y1="25" x2="25" y2="15" stroke="#40c4ff" stroke-width="1.5"/><circle cx="25" cy="15" r="7" fill="none" stroke="#40c4ff" stroke-width="1.5"/><circle cx="25" cy="15" r="11" fill="none" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Взвод</span>
+                    </div>
+                    <div class="symbol-item size-item" data-symbol="company" title="Рота">
+                        <svg viewBox="0 0 50 30" class="symbol-svg"><circle cx="25" cy="15" r="4" fill="#40c4ff"/><line x1="15" y1="25" x2="25" y2="15" stroke="#40c4ff" stroke-width="1.5"/><line x1="10" y1="12" x2="40" y2="12" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Рота</span>
+                    </div>
+                    <div class="symbol-item size-item" data-symbol="battalion" title="Батальйон">
+                        <svg viewBox="0 0 50 30" class="symbol-svg"><circle cx="25" cy="15" r="4" fill="#40c4ff"/><line x1="15" y1="25" x2="25" y2="15" stroke="#40c4ff" stroke-width="1.5"/><line x1="10" y1="12" x2="40" y2="12" stroke="#40c4ff" stroke-width="1.5"/><line x1="10" y1="6" x2="40" y2="6" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Батальйон</span>
+                    </div>
+                    <div class="symbol-item size-item" data-symbol="brigade" title="Бригада">
+                        <svg viewBox="0 0 50 30" class="symbol-svg"><circle cx="25" cy="15" r="4" fill="#40c4ff"/><line x1="15" y1="25" x2="25" y2="15" stroke="#40c4ff" stroke-width="1.5"/><line x1="10" y1="12" x2="40" y2="12" stroke="#40c4ff" stroke-width="1.5"/><line x1="10" y1="6" x2="40" y2="6" stroke="#40c4ff" stroke-width="1.5"/><line x1="10" y1="24" x2="40" y2="24" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Бригада</span>
+                    </div>
+                    <div class="symbol-item size-item" data-symbol="division" title="Дивізія">
+                        <svg viewBox="0 0 60 40" class="symbol-svg"><circle cx="30" cy="20" r="4" fill="#40c4ff"/><line x1="18" y1="30" x2="30" y2="20" stroke="#40c4ff" stroke-width="1.5"/><line x1="8" y1="14" x2="52" y2="14" stroke="#40c4ff" stroke-width="1.5"/><line x1="8" y1="6" x2="52" y2="6" stroke="#40c4ff" stroke-width="1.5"/><line x1="8" y1="26" x2="52" y2="26" stroke="#40c4ff" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#40c4ff" stroke-width="1.5"/></svg>
+                        <span>Дивізія</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <div class="category-header" data-cat="enemy">
+                    <span class="cat-arrow">&#9654;</span> Противник (червоні)
+                </div>
+                <div class="category-items" id="cat-enemy">
+                    <div class="symbol-item" data-symbol="e_infantry" title="Піхота противника">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#ef5350" fill-opacity="0.3" stroke="#ef5350" stroke-width="2"/><line x1="5" y1="5" x2="55" y2="45" stroke="#ef5350" stroke-width="1.5"/><line x1="55" y1="5" x2="5" y2="45" stroke="#ef5350" stroke-width="1.5"/></svg>
+                        <span>Піхота</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="e_armor" title="Бронетехніка противника">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#ef5350" fill-opacity="0.3" stroke="#ef5350" stroke-width="2"/><ellipse cx="30" cy="25" rx="18" ry="12" fill="none" stroke="#ef5350" stroke-width="1.5"/></svg>
+                        <span>Бронетехніка</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="e_artillery" title="Артилерія противника">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><circle cx="30" cy="25" r="18" fill="#ef5350" fill-opacity="0.3" stroke="#ef5350" stroke-width="2"/><circle cx="30" cy="25" r="5" fill="#ef5350"/></svg>
+                        <span>Артилерія</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="e_recon" title="Розвідка противника">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#ef5350" fill-opacity="0.3" stroke="#ef5350" stroke-width="2"/><line x1="5" y1="5" x2="55" y2="45" stroke="#ef5350" stroke-width="1.5"/><line x1="55" y1="5" x2="5" y2="45" stroke="#ef5350" stroke-width="1.5"/><line x1="30" y1="5" x2="30" y2="45" stroke="#ef5350" stroke-width="1.5"/></svg>
+                        <span>Розвідка</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="e_unknown" title="Невідомий">
+                        <svg viewBox="0 0 60 50" class="symbol-svg"><rect x="5" y="5" width="50" height="40" fill="#ff9800" fill-opacity="0.3" stroke="#ff9800" stroke-width="2"/><text x="30" y="32" text-anchor="middle" fill="#ff9800" font-size="24" font-weight="bold">?</text></svg>
+                        <span>Невідомий</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <div class="category-header" data-cat="control">
+                    <span class="cat-arrow">&#9654;</span> Керування та рубежі
+                </div>
+                <div class="category-items" id="cat-control">
+                    <div class="symbol-item" data-symbol="fup" title="Вихідний рубіж">
+                        <svg viewBox="0 0 60 40" class="symbol-svg"><line x1="10" y1="5" x2="10" y2="35" stroke="#4caf50" stroke-width="2"/><polygon points="10,5 50,20 10,35" fill="#4caf50" fill-opacity="0.3" stroke="#4caf50" stroke-width="1.5"/></svg>
+                        <span>Вихідний рубіж</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="ld" title="Лінія розгортання">
+                        <svg viewBox="0 0 60 40" class="symbol-svg"><line x1="10" y1="5" x2="50" y2="5" stroke="#ff9800" stroke-width="2"/><line x1="10" y1="20" x2="50" y2="20" stroke="#ff9800" stroke-width="2"/><line x1="10" y1="35" x2="50" y2="35" stroke="#ff9800" stroke-width="2"/></svg>
+                        <span>Лінія розгорт.</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="objective" title="Об'єкт (ціль)">
+                        <svg viewBox="0 0 50 50" class="symbol-svg"><circle cx="25" cy="25" r="18" fill="none" stroke="#ff5722" stroke-width="2"/><circle cx="25" cy="25" r="12" fill="none" stroke="#ff5722" stroke-width="2"/><circle cx="25" cy="25" r="6" fill="none" stroke="#ff5722" stroke-width="2"/></svg>
+                        <span>Об'єкт (ціль)</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="direction" title="Напрямок удару">
+                        <svg viewBox="0 0 60 30" class="symbol-svg"><line x1="5" y1="15" x2="45" y2="15" stroke="#ff5722" stroke-width="2"/><polygon points="45,15 35,10 35,20" fill="#ff5722"/></svg>
+                        <span>Напрямок удару</span>
+                    </div>
+                    <div class="symbol-item" data-symbol="checkpoint" title="Контрольна точка">
+                        <svg viewBox="0 0 50 50" class="symbol-svg"><circle cx="25" cy="25" r="16" fill="none" stroke="#ffc107" stroke-width="2"/><text x="25" y="30" text-anchor="middle" fill="#ffc107" font-size="14" font-weight="bold">КП</text></svg>
+                        <span>Контр. точка</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- Map Container -->
+    <div class="map-wrapper">
+        <div id="map"></div>
+        <!-- Coordinates display -->
+        <div class="coords-display" id="coordsDisplay">
+            50.4500° N, 30.5233° E
+        </div>
+        <!-- Scale info -->
+        <div class="scale-info" id="scaleInfo">
+            М 1:50 000
+        </div>
+    </div>
+
+</div>
+
+<!-- Symbol Label Modal -->
+<div class="modal-overlay" id="labelModal">
+    <div class="modal-box">
+        <h3>Позначення знаку</h3>
+        <div class="modal-field">
+            <label>Позивний / Назва:</label>
+            <input type="text" id="labelName" placeholder="напр. 1-й мехбат" autocomplete="off">
+        </div>
+        <div class="modal-field">
+            <label>Примітка (нижче знаку):</label>
+            <input type="text" id="labelNote" placeholder="напр. БТР-4" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+            <button class="modal-btn cancel" id="labelCancel">Скасувати</button>
+            <button class="modal-btn ok" id="labelOk">Додати</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
