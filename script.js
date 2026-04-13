@@ -581,6 +581,8 @@ document.getElementById('tacticSelect').addEventListener('change', (e) => {
         buildArtilleryWar();
     } else if (value === 'specialops') {
         buildSpecialOpsViz();
+    } else if (value === 'frontline') {
+        buildGeneralFrontlineViz();
     } else if (value === 'export') {
         // Handle PNG export
         alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
