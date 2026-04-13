@@ -568,6 +568,8 @@ console.log('Тактична карта НАТО завантажена. Виб
 // =========================================================
 
 document.getElementById('btnDrone').addEventListener('click', buildDroneViz);
+document.getElementById('btnAssault').addEventListener('click', buildAssaultViz);
+document.getElementById('btnTrench').addEventListener('click', buildTrenchDefenseViz);
 
 function buildDroneViz() {
     placedMarkers.forEach(m => map.removeLayer(m));
@@ -1033,6 +1035,493 @@ function buildDroneViz() {
 
     // Fly to Kupyansk
     map.flyTo([49.68, 37.30], 12, { duration: 1.5 });
+}
+
+// =========================================================
+// ===== ASSAULT FORCES VISUALIZATION — GROUND ATTACK =======
+// =========================================================
+
+function buildAssaultViz() {
+    placedMarkers.forEach(m => map.removeLayer(m));
+    placedMarkers = [];
+    if (drawingPolyline) { map.removeLayer(drawingPolyline); drawingPolyline = null; }
+    drawingPoints = [];
+    gridLines.forEach(l => map.removeLayer(l));
+    gridLines = [];
+
+    const BLU = '#40c4ff';
+    const RED = '#ef5350';
+    const YEL = '#ffeb3b';
+    const GRN = '#4caf50';
+    const ORG = '#ff9800';
+    const PUR = '#e040fb';
+    const WHT = '#ffffff';
+    const PNK = '#ff4081';
+
+    // --- Animated markers storage ---
+    const animations = [];
+    window._assaultAnimations = animations;
+
+    function mk(lat, lng, svgBody, label, note, is = [80,80]) {
+        const icon = L.divIcon({
+            className: 'nato-marker',
+            html: `<div class="marker-box">
+                ${label ? `<div class="marker-label">${label}</div>` : ''}
+                <div class="marker-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50" height="50">${svgBody}</svg></div>
+                ${note ? `<div class="marker-note">${note}</div>` : ''}
+            </div>`,
+            iconSize: is, iconAnchor: [is[0]/2, is[1]/2],
+        });
+        const m = L.marker([lat, lng], { icon, draggable: true }).addTo(map);
+        placedMarkers.push(m); return m;
+    }
+
+    function mkAnim(lat, lng, svgBody, label, note, is = [60,60]) {
+        const icon = L.divIcon({
+            className: 'nato-marker',
+            html: `<div class="marker-box assault-anim">
+                ${label ? `<div class="marker-label" style="font-size:10px;">${label}</div>` : ''}
+                <div class="marker-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="40" height="40">${svgBody}</svg></div>
+                ${note ? `<div class="marker-note" style="font-size:9px;">${note}</div>` : ''}
+            </div>`,
+            iconSize: is, iconAnchor: [is[0]/2, is[1]/2],
+        });
+        const m = L.marker([lat, lng], { icon, draggable: false }).addTo(map);
+        placedMarkers.push(m);
+        return m;
+    }
+
+    function ln(coords, color, w = 2, dash = null) {
+        const o = { color, weight: w, opacity: 0.7, interactive: false };
+        if (dash) o.dashArray = dash;
+        const l = L.polyline(coords, o).addTo(map); gridLines.push(l); return l;
+    }
+
+    function ar(coords, stroke, fill, fo = 0.1) {
+        const l = L.polygon(coords, { color: stroke, fillColor: fill||stroke, fillOpacity: fo, weight: 1.5, opacity: 0.5, interactive: false }).addTo(map);
+        gridLines.push(l); return l;
+    }
+
+    function circ(lat, lng, r, c, fo = 0.05) {
+        const x = L.circle([lat,lng], { radius: r, color: c, fillColor: c, fillOpacity: fo, weight: 1.5, interactive: false }).addTo(map);
+        gridLines.push(x); return x;
+    }
+
+    function zoneLabel(lat, lng, text, color = WHT, fs = 12) {
+        const icon = L.divIcon({
+            className: 'nato-marker',
+            html: `<div style="color:${color};font-size:${fs}px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.9);white-space:nowrap;letter-spacing:1px;">${text}</div>`,
+            iconAnchor: [0, 0],
+        });
+        placedMarkers.push(L.marker([lat, lng], { icon, interactive: false }).addTo(map));
+    }
+
+    // =========================================================
+    //  ASSAULT ON ENEMY POSITION — KUPYANSK SECTOR
+    //  Demonstrates ground assault phases: Prep → Breakthrough → Exploitation
+    // =========================================================
+
+    // ---- ENEMY DEFENSIVE POSITION ----
+    zoneLabel(49.68, 37.55, '───── ВОРОЖА ПОЗИЦІЯ ─────', RED, 12);
+
+    // Enemy trench system
+    ln([
+        [49.75, 37.40], [49.72, 37.45], [49.70, 37.50],
+        [49.68, 37.55], [49.66, 37.50], [49.64, 37.45],
+        [49.62, 37.40]
+    ], RED, 3);
+
+    // Enemy positions in trenches
+    mk(49.70, 37.50, `<rect x="8" y="8" width="34" height="34" fill="${RED}33" stroke="${RED}" stroke-width="2"/><line x1="8" y="8" x2="42" y2="42" stroke="${RED}" stroke-width="1.5"/><line x1="42" y1="8" x2="8" y2="42" stroke="${RED}" stroke-width="1.5"/>`, 'РФ Окоп-1', 'МСР + ПК', [70,70]);
+    mk(49.68, 37.55, `<rect x="8" y="8" width="34" height="34" fill="${RED}33" stroke="${RED}" stroke-width="2"/><ellipse cx="25" cy="25" rx="10" ry="7" fill="none" stroke="${RED}" stroke-width="1.5"/>`, 'РФ ДОТ', 'Танк в ДОТі', [70,70]);
+    mk(49.66, 37.50, `<rect x="8" y="8" width="34" height="34" fill="${RED}33" stroke="${RED}" stroke-width="2"/><line x1="8" y="8" x2="42" y2="42" stroke="${RED}" stroke-width="1.5"/><line x1="42" y1="8" x2="8" y2="42" stroke="${RED}" stroke-width="1.5"/>`, 'РФ Окоп-2', 'МСР + АГС', [70,70]);
+
+    // Enemy supporting elements
+    mk(49.72, 37.60, `<circle cx="25" cy="25" r="15" fill="${RED}33" stroke="${RED}" stroke-width="2"/><circle cx="25" cy="25" r="5" fill="${RED}"/>`, 'РФ АРТ', '2С3 Акація', [80,80]);
+    mk(49.64, 37.60, `<rect x="8" y="8" width="34" height="34" fill="${RED}33" stroke="${RED}" stroke-width="2"/><line x1="8" y="8" x2="42" y2="42" stroke="${RED}" stroke-width="1.5"/><line x1="42" y1="8" x2="8" y2="42" stroke="${RED}" stroke-width="1.5"/>`, 'РФ Резерв', 'Мотостр. резерв', [70,70]);
+
+    // ---- UKRAINIAN ASSAULT FORCES ----
+
+    // Phase 1: PREPARATION (artillery barrage)
+    zoneLabel(49.55, 37.30, 'ФАЗА 1: ПІДГОТОВКА — АРТИЛЕРІЙСЬКИЙ ОБСТРІЛ', ORG, 11);
+
+    // Artillery positions
+    mk(49.60, 37.15, `<circle cx="25" cy="25" r="15" fill="${ORG}33" stroke="${ORG}" stroke-width="2"/><circle cx="25" cy="25" r="5" fill="${ORG}"/>`, 'АРТ-1', 'M777 / CAESAR', [80,80]);
+    mk(49.58, 37.20, `<circle cx="25" cy="25" r="15" fill="${ORG}33" stroke="${ORG}" stroke-width="2"/><circle cx="25" cy="25" r="5" fill="${ORG}"/>`, 'АРТ-2', '2С3 Акація', [80,80]);
+
+    // Artillery barrage zone (shaded area)
+    ar([
+        [49.62, 37.35], [49.65, 37.45], [49.68, 37.50],
+        [49.71, 37.45], [49.74, 37.40], [49.72, 37.35]
+    ], ORG, ORG, 0.15);
+
+    // Artillery fire lines
+    ln([[49.60, 37.15], [49.68, 37.45]], ORG, 2, '4 4');
+    ln([[49.58, 37.20], [49.66, 37.50]], ORG, 2, '4 4');
+
+    // Phase 2: BREAKTHROUGH (infantry assault)
+    zoneLabel(49.55, 37.45, 'ФАЗА 2: ПРОРИВ — ШТУРМ ПІХОТИ', PNK, 11);
+
+    // Assault infantry positions (starting positions)
+    mk(49.65, 37.25, `<rect x="8" y="8" width="34" height="34" fill="${BLU}33" stroke="${BLU}" stroke-width="2"/><line x1="8" y="8" x2="42" y2="42" stroke="${BLU}" stroke-width="1.5"/><line x1="42" y1="8" x2="8" y2="42" stroke="${BLU}" stroke-width="1.5"/><ellipse cx="25" cy="25" rx="10" ry="7" fill="none" stroke="${BLU}" stroke-width="1.5"/>`, 'Штурм-1', 'ДШВ взвод\nБМП-2 + пiхота', [70,70]);
+    mk(49.63, 37.30, `<rect x="8" y="8" width="34" height="34" fill="${BLU}33" stroke="${BLU}" stroke-width="2"/><line x1="8" y="8" x2="42" y2="42" stroke="${BLU}" stroke-width="1.5"/><line x1="42" y1="8" x2="8" y2="42" stroke="${BLU}" stroke-width="1.5"/>`, 'Штурм-2', 'Мехбат\nТ-72 + десант', [70,70]);
+
+    // Assault routes (dashed lines showing planned movement)
+    ln([[49.65, 37.25], [49.68, 37.35], [49.70, 37.45]], PNK, 3, '6 3');
+    ln([[49.63, 37.30], [49.65, 37.40], [49.66, 37.50]], PNK, 3, '6 3');
+
+    // Fire support (tank overwatch)
+    mk(49.62, 37.35, `<rect x="8" y="8" width="34" height="34" fill="${BLU}33" stroke="${BLU}" stroke-width="2"/><ellipse cx="25" cy="25" rx="10" ry="7" fill="none" stroke="${BLU}" stroke-width="1.5"/>`, 'Танк-Підтримка', 'Т-72АМТ\nогнева підтримка', [70,70]);
+
+    // Phase 3: EXPLOITATION (deep penetration)
+    zoneLabel(49.55, 37.60, 'ФАЗА 3: РОЗВИТОК УСПІХУ — ПРОНИКНЕННЯ В ГЛИБИНУ', GRN, 11);
+
+    // Follow-on forces
+    mk(49.58, 37.40, `<rect x="8" y="8" width="34" height="34" fill="${GRN}33" stroke="${GRN}" stroke-width="2"/><line x1="8" y="8" x2="42" y2="42" stroke="${GRN}" stroke-width="1.5"/><line x1="42" y1="8" x2="8" y2="42" stroke="${GRN}" stroke-width="1.5"/>`, 'Розвиток-1', '2-й ешелон\nмехпiхота', [70,70]);
+    mk(49.56, 37.45, `<rect x="8" y="8" width="34" height="34" fill="${GRN}33" stroke="${GRN}" stroke-width="2"/><ellipse cx="25" cy="25" rx="10" ry="7" fill="none" stroke="${GRN}" stroke-width="1.5"/>`, 'Розвиток-2', 'Танкова рота\nпрорив у глибину', [70,70]);
+
+    // Exploitation routes
+    ln([[49.58, 37.40], [49.62, 37.50], [49.64, 37.60]], GRN, 3, '8 4');
+    ln([[49.56, 37.45], [49.58, 37.55], [49.60, 37.65]], GRN, 3, '8 4');
+
+    // Objectives achieved
+    mk(49.62, 37.50, `<circle cx="25" cy="25" r="15" fill="${GRN}33" stroke="${GRN}" stroke-width="3"/><circle cx="25" cy="25" r="8" fill="${GRN}"/>`, 'ЦІЛЬ-1', 'Знищено ДОТ', [60,60]);
+    mk(49.64, 37.60, `<circle cx="25" cy="25" r="15" fill="${GRN}33" stroke="${GRN}" stroke-width="3"/><circle cx="25" cy="25" r="8" fill="${GRN}"/>`, 'ЦІЛЬ-2', 'Захоплено арт.', [60,60]);
+
+    // ---- ANIMATED ASSAULT ELEMENTS ----
+
+    // Animated infantry assault
+    const assault1 = mkAnim(49.65, 37.25, `<rect x="8" y="8" width="34" height="34" fill="${PNK}33" stroke="${PNK}" stroke-width="2"/><line x1="8" y="8" x2="42" y2="42" stroke="${PNK}" stroke-width="1.5"/><line x1="42" y1="8" x2="8" y2="42" stroke="${PNK}" stroke-width="1.5"/>`, 'Штурм→', '', [50,50]);
+    animations.push({
+        marker: assault1,
+        path: [[49.65, 37.25], [49.66, 37.30], [49.67, 37.35], [49.68, 37.40], [49.69, 37.45], [49.70, 37.50]],
+        step: 0,
+        speed: 0.005,
+    });
+
+    // Animated tank breakthrough
+    const tank1 = mkAnim(49.63, 37.30, `<ellipse cx="25" cy="25" rx="12" ry="8" fill="${PNK}33" stroke="${PNK}" stroke-width="2"/>`, 'Танк→', '', [50,50]);
+    animations.push({
+        marker: tank1,
+        path: [[49.63, 37.30], [49.64, 37.35], [49.65, 37.40], [49.66, 37.45], [49.67, 37.50]],
+        step: 0,
+        speed: 0.004,
+    });
+
+    // Animated exploitation force
+    const exploit1 = mkAnim(49.58, 37.40, `<rect x="8" y="8" width="34" height="34" fill="${GRN}33" stroke="${GRN}" stroke-width="2"/><line x1="8" y="8" x2="42" y2="42" stroke="${GRN}" stroke-width="1.5"/><line x1="42" y1="8" x2="8" y2="42" stroke="${GRN}" stroke-width="1.5"/>`, 'Розвиток→', '', [50,50]);
+    animations.push({
+        marker: exploit1,
+        path: [[49.58, 37.40], [49.59, 37.45], [49.60, 37.50], [49.61, 37.55], [49.62, 37.60]],
+        step: 0,
+        speed: 0.003,
+    });
+
+    // ---- ASSAULT STATISTICS BOX ----
+    const statsIcon = L.divIcon({
+        className: 'nato-marker',
+        html: `<div style="background:rgba(22,33,62,0.92);border:1px solid #4fc3f7;border-radius:8px;padding:12px 16px;color:#e0e0e0;font-size:11px;line-height:1.8;min-width:240px;">
+            <div style="color:#4fc3f7;font-weight:700;font-size:13px;margin-bottom:6px;">&#9876; ДШВ ШТУРМ — СТАТИСТИКА</div>
+            <div style="border-top:1px solid #0f3460;padding-top:6px;">
+                <div>Фаза підготовки: <span style="color:#ff9800;font-weight:700;">10 хв</span> артобстріл</div>
+                <div>Штурмові втрати: <span style="color:#ef5350;">5</span> поранених, <span style="color:#4caf50;">2</span> загиблих</div>
+                <div>Знищено цілей: <span style="color:#ef5350;font-weight:700;">1</span> ДОТ + <span style="color:#ef5350;">8</span> особового складу</div>
+                <div>Захоплено: <span style="color:#4caf50;font-weight:700;">2</span> позиції + <span style="color:#4caf50;">1</span> артсистема</div>
+                <div>Час на прорив: <span style="color:#00e5ff;font-weight:700;">45 хв</span> від початку</div>
+            </div>
+            <div style="border-top:1px solid #0f3460;margin-top:6px;padding-top:6px;color:#888;">
+                Тактика: вогнева підтримка → швидкий прорив → закріплення<br>
+                Ефективність: координація артилерії + піхоти
+            </div>
+        </div>`,
+        iconAnchor: [0, 0],
+    });
+    placedMarkers.push(L.marker([49.52, 37.25], { icon: statsIcon, interactive: false }).addTo(map));
+
+    // ---- KILL CHAIN FOR ASSAULT ----
+    zoneLabel(49.55, 37.75, 'ЛАНЦЮГ ШТУРМУ (GROUND ASSAULT):', WHT, 11);
+
+    const phases = [
+        { lat: 49.555, lng: 37.25, text: '① РОЗВІДКА', desc: 'Визначення позицій\nта слабких місць', color: CYN },
+        { lat: 49.555, lng: 37.35, text: '② ПІДГОТОВКА', desc: 'Артобстріл + планування\nатаки', color: ORG },
+        { lat: 49.555, lng: 37.45, text: '③ ПРОРИВ', desc: 'Швидкий наступ\nна слабку ділянку', color: PNK },
+        { lat: 49.555, lng: 37.55, text: '④ ЗАКРІПЛЕННЯ', desc: 'Утримання позиції +\nвідбиття контратак', color: GRN },
+        { lat: 49.555, lng: 37.65, text: '⑤ РОЗВИТОК', desc: 'Проникнення вглиб +\nзахоплення цілей', color: YEL },
+    ];
+
+    phases.forEach(s => {
+        const icon = L.divIcon({
+            className: 'nato-marker',
+            html: `<div style="text-align:center;">
+                <div style="color:${s.color};font-size:13px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.9);margin-bottom:4px;">${s.text}</div>
+                <div style="color:#bbb;font-size:10px;line-height:1.4;white-space:pre-line;text-shadow:0 1px 3px rgba(0,0,0,0.9);">${s.desc}</div>
+            </div>`,
+            iconAnchor: [50, 0],
+        });
+        placedMarkers.push(L.marker([s.lat, s.lng], { icon, interactive: false }).addTo(map));
+    });
+
+    // Arrows between phases
+    ln([[49.56, 37.29], [49.56, 37.31]], WHT, 1.5);
+    ln([[49.56, 37.39], [49.56, 37.41]], WHT, 1.5);
+    ln([[49.56, 37.49], [49.56, 37.51]], WHT, 1.5);
+    ln([[49.56, 37.59], [49.56, 37.61]], WHT, 1.5);
+
+    // Start animation loop
+    if (window._assaultAnimFrame) cancelAnimationFrame(window._assaultAnimFrame);
+    function animateAssault() {
+        animations.forEach(a => {
+            if (a.path.length < 2) return;
+            a.step += a.speed;
+            if (a.step >= a.path.length - 1) a.step = 0;
+
+            const idx = Math.floor(a.step);
+            const frac = a.step - idx;
+            const from = a.path[idx];
+            const to = a.path[Math.min(idx + 1, a.path.length - 1)];
+
+            const lat = from[0] + (to[0] - from[0]) * frac;
+            const lng = from[1] + (to[1] - from[1]) * frac;
+            a.marker.setLatLng([lat, lng]);
+        });
+        window._assaultAnimFrame = requestAnimationFrame(animateAssault);
+    }
+    animateAssault();
+
+    // Fly to assault area
+    map.flyTo([49.62, 37.40], 13, { duration: 1.5 });
+}
+
+// =========================================================
+// ===== TRENCH DEFENSE VISUALIZATION — POSITION SETUP =====
+// =========================================================
+
+function buildTrenchDefenseViz() {
+    placedMarkers.forEach(m => map.removeLayer(m));
+    placedMarkers = [];
+    if (drawingPolyline) { map.removeLayer(drawingPolyline); drawingPolyline = null; }
+    drawingPoints = [];
+    gridLines.forEach(l => map.removeLayer(l));
+    gridLines = [];
+
+    const BLU = '#40c4ff';
+    const RED = '#ef5350';
+    const YEL = '#ffeb3b';
+    const GRN = '#4caf50';
+    const ORG = '#ff9800';
+    const PUR = '#e040fb';
+    const WHT = '#ffffff';
+    const PNK = '#ff4081';
+    const BRN = '#8d6e63';
+
+    function mk(lat, lng, svgBody, label, note, is = [80,80]) {
+        const icon = L.divIcon({
+            className: 'nato-marker',
+            html: `<div class="marker-box">
+                ${label ? `<div class="marker-label">${label}</div>` : ''}
+                <div class="marker-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50" height="50">${svgBody}</svg></div>
+                ${note ? `<div class="marker-note">${note}</div>` : ''}
+            </div>`,
+            iconSize: is, iconAnchor: [is[0]/2, is[1]/2],
+        });
+        const m = L.marker([lat, lng], { icon, draggable: true }).addTo(map);
+        placedMarkers.push(m); return m;
+    }
+
+    function ln(coords, color, w = 2, dash = null) {
+        const o = { color, weight: w, opacity: 0.7, interactive: false };
+        if (dash) o.dashArray = dash;
+        const l = L.polyline(coords, o).addTo(map); gridLines.push(l); return l;
+    }
+
+    function ar(coords, stroke, fill, fo = 0.1) {
+        const l = L.polygon(coords, { color: stroke, fillColor: fill||stroke, fillOpacity: fo, weight: 1.5, opacity: 0.5, interactive: false }).addTo(map);
+        gridLines.push(l); return l;
+    }
+
+    function circ(lat, lng, r, c, fo = 0.05) {
+        const x = L.circle([lat,lng], { radius: r, color: c, fillColor: c, fillOpacity: fo, weight: 1.5, interactive: false }).addTo(map);
+        gridLines.push(x); return x;
+    }
+
+    function zoneLabel(lat, lng, text, color = WHT, fs = 12) {
+        const icon = L.divIcon({
+            className: 'nato-marker',
+            html: `<div style="color:${color};font-size:${fs}px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.9);white-space:nowrap;letter-spacing:1px;">${text}</div>`,
+            iconAnchor: [0, 0],
+        });
+        placedMarkers.push(L.marker([lat, lng], { icon, interactive: false }).addTo(map));
+    }
+
+    // =========================================================
+    //  DEFENSIVE TRENCH POSITION SETUP
+    //  Shows proper organization of defensive positions
+    // =========================================================
+
+    zoneLabel(49.70, 37.25, '───── ОБОРОННА ПОЗИЦІЯ — ОКОПНА СИСТЕМА ─────', BLU, 12);
+
+    // ---- MAIN TRENCH LINE ----
+    zoneLabel(49.68, 37.35, 'ОСНОВНА ТРАНШЕЯ', BLU, 10);
+
+    // Main trench (continuous line)
+    ln([
+        [49.75, 37.20], [49.72, 37.25], [49.70, 37.30],
+        [49.68, 37.35], [49.66, 37.40], [49.64, 37.45],
+        [49.62, 37.50], [49.60, 37.55]
+    ], BLU, 4);
+
+    // ---- COMMUNICATION TRENCHES ----
+    zoneLabel(49.72, 37.15, 'КОМУНІКАЦІЙНІ ТРАНШЕЇ', GRN, 10);
+
+    // Connecting trenches to rear
+    ln([[49.75, 37.20], [49.78, 37.15]], GRN, 2, '4 2'); // Traverse
+    ln([[49.72, 37.25], [49.75, 37.20]], GRN, 2); // Main to traverse
+    ln([[49.70, 37.30], [49.73, 37.25]], GRN, 2); // Position to main
+    ln([[49.68, 37.35], [49.71, 37.30]], GRN, 2); // Position to main
+    ln([[49.66, 37.40], [49.69, 37.35]], GRN, 2); // Position to main
+    ln([[49.64, 37.45], [49.67, 37.40]], GRN, 2); // Position to main
+
+    // ---- FIRE POSITIONS ----
+    zoneLabel(49.65, 37.20, 'ВОГНЕВІ ПОЗИЦІЇ', ORG, 10);
+
+    // Infantry fighting positions (rifle pits)
+    mk(49.74, 37.22, `<rect x="10" y="15" width="30" height="20" fill="${BRN}66" stroke="${BRN}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${BRN}" stroke-width="2"/>`, 'Стр. №1', 'Піхотинець\nАК-74 + ПК', [60,60]);
+    mk(49.72, 37.27, `<rect x="10" y="15" width="30" height="20" fill="${BRN}66" stroke="${BRN}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${BRN}" stroke-width="2"/>`, 'Стр. №2', 'Піхотинець\nАК-74', [60,60]);
+    mk(49.70, 37.32, `<rect x="10" y="15" width="30" height="20" fill="${BRN}66" stroke="${BRN}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${BRN}" stroke-width="2"/>`, 'Стр. №3', 'Гранатометчик\nРПГ-7', [60,60]);
+    mk(49.68, 37.37, `<rect x="10" y="15" width="30" height="20" fill="${BRN}66" stroke="${BRN}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${BRN}" stroke-width="2"/>`, 'Стр. №4', 'Снайпер\nСВД', [60,60]);
+    mk(49.66, 37.42, `<rect x="10" y="15" width="30" height="20" fill="${BRN}66" stroke="${BRN}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${BRN}" stroke-width="2"/>`, 'Стр. №5', 'Піхотинець\nАК-74', [60,60]);
+    mk(49.64, 37.47, `<rect x="10" y="15" width="30" height="20" fill="${BRN}66" stroke="${BRN}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${BRN}" stroke-width="2"/>`, 'Стр. №6', 'Командир\nАК-74 + радіо', [60,60]);
+
+    // ---- BUNKERS AND FORTIFIED POSITIONS ----
+    zoneLabel(49.62, 37.30, 'БЛІНДАЖІ ТА УКРІПЛЕНІ ПОЗИЦІЇ', YEL, 10);
+
+    // Reinforced bunker
+    mk(49.70, 37.35, `<rect x="5" y="10" width="40" height="30" fill="${YEL}33" stroke="${YEL}" stroke-width="3"/><line x1="5" y1="25" x2="45" y2="25" stroke="${YEL}" stroke-width="2"/><line x1="15" y1="10" x2="15" y2="40" stroke="${YEL}" stroke-width="2"/><line x1="35" y1="10" x2="35" y2="40" stroke="${YEL}" stroke-width="2"/>`, 'БЛІНДАЖ-1', 'ДОТ для ПК\nбетон + дерево', [80,80]);
+
+    // Machine gun position
+    mk(49.66, 37.45, `<rect x="8" y="12" width="34" height="26" fill="${YEL}33" stroke="${YEL}" stroke-width="2"/><circle cx="25" cy="25" r="8" fill="none" stroke="${YEL}" stroke-width="2"/><line x1="17" y1="17" x2="33" y2="33" stroke="${YEL}" stroke-width="1"/><line x1="33" y1="17" x2="17" y2="33" stroke="${YEL}" stroke-width="1"/>`, 'ПК ПОЗИЦІЯ', 'НСВ «Утьос»\nна сошці', [70,70]);
+
+    // ---- ANTI-TANK POSITIONS ----
+    zoneLabel(49.60, 37.20, 'ПРОТИТАНКОВІ ПОЗИЦІЇ', RED, 10);
+
+    // ATGM positions (hidden in trenches)
+    mk(49.68, 37.40, `<rect x="10" y="15" width="30" height="20" fill="${RED}33" stroke="${RED}" stroke-width="2"/><polygon points="25,10 20,20 30,20" fill="${RED}"/><line x1="25" y1="20" x2="25" y2="35" stroke="${RED}" stroke-width="2"/>`, 'ПТРК-1', 'Stugna-P\nв окопі', [70,70]);
+    mk(49.64, 37.50, `<rect x="10" y="15" width="30" height="20" fill="${RED}33" stroke="${RED}" stroke-width="2"/><polygon points="25,10 20,20 30,20" fill="${RED}"/><line x1="25" y1="20" x2="25" y2="35" stroke="${RED}" stroke-width="2"/>`, 'ПТРК-2', 'Javelin\nпозиція', [70,70]);
+
+    // Tank defensive position
+    mk(49.62, 37.40, `<ellipse cx="25" cy="30" rx="15" ry="8" fill="${RED}33" stroke="${RED}" stroke-width="2"/><rect x="18" y="15" width="14" height="10" fill="none" stroke="${RED}" stroke-width="2"/><line x1="25" y1="10" x2="25" y2="15" stroke="${RED}" stroke-width="2"/>`, 'ТАНКОВА ПОЗИЦІЯ', 'Т-72 в окопі\nамбразура', [80,80]);
+
+    // ---- DEFENSIVE DEPTH ----
+    zoneLabel(49.58, 37.10, 'ГЛИБИНА ОБОРОНИ', PUR, 10);
+
+    // Second line positions (fallback)
+    ln([
+        [49.65, 37.10], [49.63, 37.15], [49.61, 37.20],
+        [49.59, 37.25], [49.57, 37.30]
+    ], PUR, 3, '6 3');
+
+    mk(49.63, 37.15, `<rect x="10" y="15" width="30" height="20" fill="${PUR}33" stroke="${PUR}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${PUR}" stroke-width="2"/>`, '2-й ЕШЕЛОН-1', 'Резервна позиція', [60,60]);
+    mk(49.61, 37.20, `<rect x="10" y="15" width="30" height="20" fill="${PUR}33" stroke="${PUR}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${PUR}" stroke-width="2"/>`, '2-й ЕШЕЛОН-2', 'Резервна позиція', [60,60]);
+
+    // ---- OBSERVATION AND COMMAND ----
+    zoneLabel(49.75, 37.30, 'СПОСТЕРЕЖЕННЯ ТА УПРАВЛІННЯ', CYN, 10);
+
+    // Observation post
+    mk(49.74, 37.30, `<circle cx="25" cy="25" r="15" fill="${CYN}33" stroke="${CYN}" stroke-width="2"/><line x1="10" y1="25" x2="40" y2="25" stroke="${CYN}" stroke-width="2"/><line x1="25" y1="10" x2="25" y2="40" stroke="${CYN}" stroke-width="2"/><circle cx="25" cy="25" r="5" fill="none" stroke="${CYN}" stroke-width="1"/>`, 'ОП-1', 'Спостережний пункт\nбинокль + радіо', [70,70]);
+
+    // Command post
+    mk(49.76, 37.25, `<rect x="8" y="8" width="34" height="34" fill="${CYN}33" stroke="${CYN}" stroke-width="2"/><polygon points="25,12 18,22 32,22" fill="${CYN}"/><line x1="25" y1="22" x2="25" y2="38" stroke="${CYN}" stroke-width="2"/><line x1="15" y1="28" x2="35" y2="28" stroke="${CYN}" stroke-width="1"/><line x1="15" y1="32" x2="35" y2="32" stroke="${CYN}" stroke-width="1"/>`, 'КП ВЗВОДУ', 'Командний пункт\nкарта + радіостанція', [80,80]);
+
+    // ---- OBSTACLES AND MINES ----
+    zoneLabel(49.55, 37.35, 'ЗАГОРОДЖЕННЯ ТА МІННІ ПОЛЯ', BRN, 10);
+
+    // Minefield
+    ar([
+        [49.69, 37.15], [49.71, 37.20], [49.69, 37.25],
+        [49.67, 37.20]
+    ], BRN, BRN, 0.3);
+
+    zoneLabel(49.68, 37.18, 'МІННЕ ПОЛЕ', BRN, 9);
+
+    // Wire obstacles
+    ln([[49.72, 37.18], [49.74, 37.22]], BRN, 1, '2 2');
+    ln([[49.74, 37.22], [49.76, 37.26]], BRN, 1, '2 2');
+    zoneLabel(49.75, 37.24, 'КОЛЮЧИЙ ДРІТ', BRN, 8);
+
+    // Anti-personnel obstacles
+    mk(49.71, 37.28, `<polygon points="25,15 15,35 35,35" fill="${BRN}66" stroke="${BRN}" stroke-width="2"/><line x1="20" y1="25" x2="30" y2="25" stroke="${BRN}" stroke-width="1"/><line x1="25" y1="20" x2="25" y2="30" stroke="${BRN}" stroke-width="1"/>`, 'ВОЛЧІ ЯМИ', 'Протипіхотні\nперешкоди', [60,60]);
+
+    // ---- SUPPORTING ELEMENTS ----
+    zoneLabel(49.62, 37.05, 'ЕЛЕМЕНТИ ПІДТРИМКИ', GRN, 10);
+
+    // Medical post
+    mk(49.64, 37.10, `<rect x="10" y="15" width="30" height="20" fill="${GRN}33" stroke="${GRN}" stroke-width="2"/><line x1="20" y1="10" x2="30" y2="10" stroke="${GRN}" stroke-width="2"/><line x1="25" y1="10" x2="25" y2="35" stroke="${GRN}" stroke-width="2"/><circle cx="25" cy="20" r="3" fill="${GRN}"/>`, 'МЕДПУНКТ', 'Медичний пункт\nаптечки + носилки', [70,70]);
+
+    // Ammunition point
+    mk(49.66, 37.08, `<rect x="8" y="8" width="34" height="34" fill="${GRN}33" stroke="${GRN}" stroke-width="2"/><circle cx="25" cy="25" r="8" fill="none" stroke="${GRN}" stroke-width="2"/><line x1="17" y1="17" x2="33" y2="33" stroke="${GRN}" stroke-width="1"/><line x1="33" y1="17" x2="17" y2="33" stroke="${GRN}" stroke-width="1"/><line x1="25" y1="15" x2="25" y2="35" stroke="${GRN}" stroke-width="1"/><line x1="15" y1="25" x2="35" y2="25" stroke="${GRN}" stroke-width="1"/>`, 'БОЄКОМПЛЕКТ', 'Склад БК\nнабої + гранати', [70,70]);
+
+    // ---- DEFENSIVE SECTORS ----
+    zoneLabel(49.55, 37.50, 'СЕКТОРИ ОБОРОНИ:', WHT, 11);
+
+    const sectors = [
+        { lat: 49.555, lng: 37.25, text: 'ПРАВИЙ ФЛАНГ', desc: 'Сектор №1\nТ-72 + ПТРК', color: BLU },
+        { lat: 49.555, lng: 37.35, text: 'ЦЕНТР', desc: 'Сектор №2\nПК + піхота', color: ORG },
+        { lat: 49.555, lng: 37.45, text: 'ЛІВИЙ ФЛАНГ', desc: 'Сектор №3\nБліндаж + стрілецькі', color: YEL },
+    ];
+
+    sectors.forEach(s => {
+        const icon = L.divIcon({
+            className: 'nato-marker',
+            html: `<div style="text-align:center;">
+                <div style="color:${s.color};font-size:13px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.9);margin-bottom:4px;">${s.text}</div>
+                <div style="color:#bbb;font-size:10px;line-height:1.4;white-space:pre-line;text-shadow:0 1px 3px rgba(0,0,0,0.9);">${s.desc}</div>
+            </div>`,
+            iconAnchor: [50, 0],
+        });
+        placedMarkers.push(L.marker([s.lat, s.lng], { icon, interactive: false }).addTo(map));
+    });
+
+    // ---- DEFENSE STATISTICS ----
+    const statsIcon = L.divIcon({
+        className: 'nato-marker',
+        html: `<div style="background:rgba(22,33,62,0.92);border:1px solid #4fc3f7;border-radius:8px;padding:12px 16px;color:#e0e0e0;font-size:11px;line-height:1.8;min-width:240px;">
+            <div style="color:#4fc3f7;font-weight:700;font-size:13px;margin-bottom:6px;">&#9876; ОКОПНА ОБОРОНА — ХАРАКТЕРИСТИКИ</div>
+            <div style="border-top:1px solid #0f3460;padding-top:6px;">
+                <div>Довжина траншеї: <span style="color:#4fc3f7;font-weight:700;">2.5 км</span></div>
+                <div>Вогневі позиції: <span style="color:#ff9800;font-weight:700;">6</span> стрілецьких + <span style="color:#ffeb3b;">2</span> ПК</div>
+                <div>Укріплені позиції: <span style="color:#ffeb3b;font-weight:700;">1</span> блідаж + <span style="color:#ffeb3b;">1</span> ДОТ</div>
+                <div>Протитанкові засоби: <span style="color:#ef5350;font-weight:700;">3</span> ПТРК + <span style="color:#ef5350;">1</span> танк</div>
+                <div>Мінні поля: <span style="color:#8d6e63;font-weight:700;">1</span> основне + <span style="color:#8d6e63;">2</span> додаткових</div>
+                <div>Штат: <span style="color:#4caf50;font-weight:700;">45</span> осіб (взвод + підрозділи)</div>
+            </div>
+            <div style="border-top:1px solid #0f3460;margin-top:6px;padding-top:6px;color:#888;">
+                Принципи: глибина оборони, вогнева взаємодія, укриття<br>
+                Час на обладнання: 48 годин при наявності техніки
+            </div>
+        </div>`,
+        iconAnchor: [0, 0],
+    });
+    placedMarkers.push(L.marker([49.52, 37.10], { icon: statsIcon, interactive: false }).addTo(map));
+
+    // ---- DEFENSE ZONES VISUALIZATION ----
+    // Main defense zone
+    ar([
+        [49.76, 37.15], [49.78, 37.20], [49.76, 37.30], [49.72, 37.35],
+        [49.68, 37.40], [49.64, 37.45], [49.60, 37.50], [49.58, 37.45],
+        [49.60, 37.35], [49.64, 37.30], [49.68, 37.25], [49.72, 37.20]
+    ], BLU, BLU, 0.05);
+
+    // Killing zone (no-man's land)
+    ar([
+        [49.74, 37.25], [49.72, 37.30], [49.70, 37.35], [49.68, 37.40],
+        [49.66, 37.45], [49.64, 37.50], [49.62, 37.45], [49.64, 37.40],
+        [49.66, 37.35], [49.68, 37.30], [49.70, 37.25], [49.72, 37.20]
+    ], RED, RED, 0.08);
+
+    zoneLabel(49.68, 37.32, 'ЗОНА УРАЖЕННЯ', RED, 9);
+
+    // Fly to trench defense area
+    map.flyTo([49.65, 37.30], 13, { duration: 1.5 });
 }
 
 // =========================================================
