@@ -26,12 +26,15 @@
         <button class="action-btn" id="btnUndo" title="Скасувати (Ctrl+Z)">&#8630;</button>
         <button class="action-btn" id="btnClear" title="Очистити все">&#128465; Очистити</button>
         <button class="action-btn" id="btnGrid" title="Сітка">&#9638; Сітка</button>
-        <button class="action-btn" id="btnDrone" title="БпАК взвод — Куп'янськ" style="border-color:#e040fb;color:#e040fb;">&#9992; БпАК Куп'янськ</button>
-        <button class="action-btn" id="btnKyiv" title="Оборона Києва" style="border-color:#ffc107;color:#ffc107;">&#9733; Оборона Києва</button>
-        <button class="action-btn" id="btnDefense" title="Оборона Харкова" style="border-color:#4caf50;color:#4caf50;">&#9876; Оборона Харкова</button>
-        <button class="action-btn" id="btnAssault" title="ДШВ штурм позицій" style="border-color:#ff4081;color:#ff4081;">&#9876; ДШВ Штурм</button>
-        <button class="action-btn" id="btnTrench" title="Окопна оборона" style="border-color:#8d6e63;color:#8d6e63;">&#9876; Окоп Оборона</button>
-        <button class="action-btn export-btn" id="btnExport" title="Експорт PNG">&#128190; PNG</button>
+        <select class="action-select" id="tacticSelect">
+            <option value="">Оберіть тактику...</option>
+            <option value="drone">&#9992; БпАК Куп'янськ</option>
+            <option value="kyiv">&#9733; Оборона Києва</option>
+            <option value="kharkiv">&#9876; Оборона Харкова</option>
+            <option value="assault">&#9876; ДШВ Штурм</option>
+            <option value="trench">&#9876; Окоп Оборона</option>
+            <option value="export">&#128190; PNG</option>
+        </select>
     </div>
 </header>
 

@@ -536,10 +536,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // --- Export PNG ---
-document.getElementById('btnExport').addEventListener('click', () => {
-    // Simple export using html2canvas approach via canvas
-    alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
-});
+// Now handled by the tacticSelect dropdown
 
 // --- Disable map dragging when in select+symbol mode ---
 map.on('click', () => {
@@ -567,9 +564,28 @@ console.log('Тактична карта НАТО завантажена. Виб
 // ===== UAV PLATOON VISUALIZATION — KUPYANSK ==============
 // =========================================================
 
-document.getElementById('btnDrone').addEventListener('click', buildDroneViz);
-document.getElementById('btnAssault').addEventListener('click', buildAssaultViz);
-document.getElementById('btnTrench').addEventListener('click', buildTrenchDefenseViz);
-document.getElementById('btnKyiv').addEventListener('click', buildKyivDefense);
-document.getElementById('btnDefense').addEventListener('click', buildKharkivDefense);
+// Tactic selection dropdown handler
+document.getElementById('tacticSelect').addEventListener('change', (e) => {
+    const value = e.target.value;
+    if (value === 'drone') {
+        buildDroneViz();
+    } else if (value === 'kyiv') {
+        buildKyivDefense();
+    } else if (value === 'kharkiv') {
+        buildKharkivDefense();
+    } else if (value === 'assault') {
+        buildAssaultViz();
+    } else if (value === 'trench') {
+        buildTrenchDefenseViz();
+    } else if (value === 'export') {
+        // Handle PNG export
+        alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
+        // Reset select to default
+        e.target.value = '';
+    }
+    // Reset select to default after selection (except for export)
+    if (value !== 'export') {
+        e.target.value = '';
+    }
+});
 
