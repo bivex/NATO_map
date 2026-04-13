@@ -577,6 +577,8 @@ document.getElementById('tacticSelect').addEventListener('change', (e) => {
         buildAssaultViz();
     } else if (value === 'trench') {
         buildTrenchDefenseViz();
+    } else if (value === 'artillery') {
+        buildArtilleryWar();
     } else if (value === 'export') {
         // Handle PNG export
         alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
