@@ -587,6 +587,8 @@ document.getElementById('tacticSelect').addEventListener('change', (e) => {
         buildMilitaryHQViz();
     } else if (value === 'medical-company') {
         buildMedicalCompanyViz();
+    } else if (value === 'mech-battalion') {
+        buildMechBattalionViz();
     } else if (value === 'export') {
         // Handle PNG export
         alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
