@@ -28,22 +28,36 @@
         <button class="action-btn" id="btnGrid" title="Сітка">&#9638; Сітка</button>
         <select class="action-select" id="tacticSelect">
             <option value="">Оберіть тактику...</option>
-            <option value="drone">&#9992; БпАК Куп'янськ</option>
-            <option value="kyiv">&#9733; Оборона Києва</option>
-            <option value="kharkiv">&#9876; Оборона Харкова</option>
-            <option value="assault">&#9876; ДШВ Штурм</option>
-            <option value="trench">&#9876; 1. Позиционная война</option>
-            <option value="artillery">&#9876; 2. Артиллерийская война</option>
-            <option value="specialops">&#9872; 7. Спецоперации и диверсии</option>
-            <option value="frontline">&#128279; Общая линия фронта</option>
 
-            <option value="military-hq">&#127978; Штаб военной части</option>
-            <option value="medical-company">&#129657; Медицинская рота</option>
-            <option value="mech-battalion">&#128663; Механизированный батальон</option>
-            <option value="mech-company">&#128663; Механизированная рота</option>
-            <option value="mech-platoon">&#128663; Механизированный взвод</option>
-            <option value="logistics">&#128229; Тыловое обеспечение</option>
-            <option value="export">&#128190; PNG</option>
+            <optgroup label="&#127919; Бойові ситуації">
+                <option value="frontline">&#128279; Загальна лінія фронту</option>
+                <option value="trench">&#9876; Позиційна війна</option>
+                <option value="artillery">&#128165; Артилерійська війна</option>
+                <option value="drone">&#128747; БпАК — Куп&#x27;янськ</option>
+                <option value="assault">&#129354; ДШВ Штурм</option>
+                <option value="specialops">&#127987; Спецоперації та диверсії</option>
+            </optgroup>
+
+            <optgroup label="&#128204; Оборона міст">
+                <option value="kyiv">&#9733; Оборона Києва</option>
+                <option value="kharkiv">&#9876; Оборона Харкова</option>
+            </optgroup>
+
+            <optgroup label="&#128299; Підрозділи — від взводу до батальйону">
+                <option value="mech-platoon">&#9654; Механізований взвод</option>
+                <option value="mech-company">&#9654;&#9654; Механізована рота</option>
+                <option value="mech-battalion">&#9654;&#9654;&#9654; Механізований батальйон</option>
+            </optgroup>
+
+            <optgroup label="&#9981; Забезпечення та підтримка">
+                <option value="military-hq">&#127978; Штаб військової частини</option>
+                <option value="medical-company">&#129657; Медична рота</option>
+                <option value="logistics">&#128230; Тилове забезпечення</option>
+            </optgroup>
+
+            <optgroup label="&#128295; Експорт">
+                <option value="export">&#128190; Зберегти PNG</option>
+            </optgroup>
         </select>
     </div>
 </header>
