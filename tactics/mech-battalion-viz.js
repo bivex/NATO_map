@@ -13,7 +13,7 @@ function buildMechBattalionViz() {
     window._mechBattalionAnimations = animations;
 
     zoneLabel(49.5, 37.0, '───── МЕХАНИЗИРОВАННЫЙ БАТАЛЬОН ─────', COLORS.BLU, 12);
-    zoneLabel(49.3, 37.0, 'ОРГАНИЗАЦИЯ И БОЕВЫЕ ПОРЯДКИ МЕХБАТА (АКТУАЛЬНАЯ УКРАИНСКАЯ СТРУКТУРА)', COLORS.BLU, 9);
+    zoneLabel(49.3, 37.0, 'АКТУАЛЬНАЯ СТРУКТУРА УКРАИНСКИХ МЕХБАТАЛЬОНОВ 2024', COLORS.BLU, 9);
 
     // =====================================================
     // BATTALION COMMAND POST
@@ -50,7 +50,7 @@ function buildMechBattalionViz() {
     mk(49.38, 37.18, `<rect x="5" y="15" width="40" height="20" fill="${COLORS.GRN}33" stroke="${COLORS.GRN}" stroke-width="2"/><polygon points="25,12 18,22 32,22" fill="${COLORS.GRN}"/><line x1="25" y1="22" x2="25" y2="30" stroke="${COLORS.GRN}" stroke-width="2"/><text x="25" y="8" text-anchor="middle" fill="${COLORS.GRN}" font-size="6" font-weight="bold">КШМ</text>`, 'КШМ-1', 'Командно-штабна машина\nуправління ротою\n🚛 КОМАНДУВАННЯ РОТОЮ', [80,80]);
 
     // BMP platoon in 1st company
-    mk(49.36, 37.22, `<rect x="5" y="12" width="40" height="26" fill="${COLORS.GRN}33" stroke="${COLORS.GRN}" stroke-width="2"/><line x1="10" y1="22" x2="35" y2="22" stroke="${COLORS.GRN}" stroke-width="3"/><circle cx="15" cy="30" r="3" fill="${COLORS.GRN}"/><circle cx="35" cy="30" r="3" fill="${COLORS.GRN}"/><text x="25" y="8" text-anchor="middle" fill="${COLORS.GRN}" font-size="6" font-weight="bold">БМП-2</text>`, 'БМП-2-1', 'БМП-2 з десантом\nпідрозділ 1-ї роти\n🚗 БМП ПІДРОЗДІЛ', [80,80]);
+    mk(49.36, 37.22, `<rect x="5" y="12" width="40" height="26" fill="${COLORS.GRN}33" stroke="${COLORS.GRN}" stroke-width="2"/><line x1="10" y1="22" x2="35" y2="22" stroke="${COLORS.GRN}" stroke-width="3"/><circle cx="15" cy="30" r="3" fill="${COLORS.GRN}"/><circle cx="35" cy="30" r="3" fill="${COLORS.GRN}"/><text x="25" y="8" text-anchor="middle" fill="${COLORS.GRN}" font-size="6" font-weight="bold">БМП-1</text>`, 'БМП-1-1', 'БМП-1 з десантом\nпідрозділ 1-ї роти\n🚗 БМП ПІДРОЗДІЛ', [80,80]);
 
     // 2nd Mechanized Company
     zoneLabel(49.0, 37.35, '2-ГА МЕХАНИЗИРОВАННАЯ РОТА', COLORS.YEL, 9);
@@ -91,8 +91,8 @@ function buildMechBattalionViz() {
     // Engineer platoon
     mk(48.58, 37.05, `<rect x="8" y="10" width="34" height="25" fill="${COLORS.BRN}33" stroke="${COLORS.BRN}" stroke-width="2"/><line x1="15" y1="17.5" x2="35" y2="17.5" stroke="${COLORS.BRN}" stroke-width="2"/><circle cx="18" cy="22.5" r="2" fill="${COLORS.BRN}"/><circle cx="25" cy="22.5" r="2" fill="${COLORS.BRN}"/><circle cx="32" cy="22.5" r="2" fill="${COLORS.BRN}"/><text x="25" y="35" text-anchor="middle" fill="${COLORS.BRN}" font-size="6" font-weight="bold">ІНЖЕНЕРИ</text>`, 'ІНЖЕНЕРИ', 'Інженерний підрозділ\nмінні поля + переправи\n⚒️ ІНЖЕНЕРНА ПІДТРИМКА', [70,70]);
 
-    // Drone platoon (modern Ukrainian addition)
-    mk(48.55, 37.08, `<rect x="8" y="10" width="34" height="25" fill="${COLORS.CYN}33" stroke="${COLORS.CYN}" stroke-width="2"/><line x1="15" y1="17.5" x2="35" y2="17.5" stroke="${COLORS.CYN}" stroke-width="2"/><circle cx="18" cy="22.5" r="2" fill="${COLORS.CYN}"/><circle cx="25" cy="22.5" r="2" fill="${COLORS.CYN}"/><circle cx="32" cy="22.5" r="2" fill="${COLORS.CYN}"/><text x="25" y="35" text-anchor="middle" fill="${COLORS.CYN}" font-size="6" font-weight="bold">ДРОНИ</text>`, 'ДРОНИ', 'БпАК + розвідувальні дрони\nBayraktar + FPV\n🛸 ДРОНОВА РОЗВІДКА', [70,70]);
+    // Drone platoon (recon + FPV)
+    mk(48.55, 37.08, `<rect x="8" y="10" width="34" height="25" fill="${COLORS.CYN}33" stroke="${COLORS.CYN}" stroke-width="2"/><line x1="15" y1="17.5" x2="35" y2="17.5" stroke="${COLORS.CYN}" stroke-width="2"/><circle cx="18" cy="22.5" r="2" fill="${COLORS.CYN}"/><circle cx="25" cy="22.5" r="2" fill="${COLORS.CYN}"/><circle cx="32" cy="22.5" r="2" fill="${COLORS.CYN}"/><text x="25" y="35" text-anchor="middle" fill="${COLORS.CYN}" font-size="6" font-weight="bold">FPV+БпАК</text>`, 'FPV+БпАК', 'FPV-дрони + Bayraktar\nбойові + розвідувальні дрони\n🛸 + 🚁 FPV + БпАК', [70,70]);
 
     // =====================================================
     // LOGISTICS AND SUPPLY
@@ -171,12 +171,12 @@ function buildMechBattalionViz() {
                 <div style="color:#4fc3f7;font-weight:700;margin-bottom:4px;">🏗️ СТРУКТУРА БАТАЛЬОНА:</div>
                 <div>• <span style="color:#ef5350;">Командир батальйону</span> — загальне керівництво</div>
                 <div>• <span style="color:#ff9800;">Начальник штаба</span> — планування + координація</div>
-                <div>• <span style="color:#4caf50;">3 механизированные роты</span> — БМП/БТР + піхота</div>
-                <div>• <span style="color:#f44336;">Танковая рота</span> — Т-72/Т-64 + підтримка</div>
-                <div>• <span style="color:#ff9800;">Артиллерийская батарея</span> — самохідна артилерія</div>
-                <div>• <span style="color:#9c27b0;">ПВО взвод</span> — протиповітряний захист</div>
+                <div>• <span style="color:#4caf50;">3 механизированные роты</span> — БМП-1/2 + піхота</div>
+                <div>• <span style="color:#f44336;">Танковая рота</span> — Т-64БМ/Т-72АМТ</div>
+                <div>• <span style="color:#ff9800;">Артиллерийская батарея</span> — 2С3/М777</div>
+                <div>• <span style="color:#9c27b0;">ПВО взвод</span> — Ігла + Bayraktar</div>
                 <div>• <span style="color:#795548;">Инженерный взвод</span> — мінні поля + переправи</div>
-                <div>• <span style="color:#00bcd4;">Дроновый взвод</span> — розвідка + ударні дрони</div>
+                <div>• <span style="color:#00bcd4;">FPV + БпАК взвод</span> — бойові дрони + розвідка</div>
                 <div>• <span style="color:#4caf50;">Тыловые подразделения</span> — забезпечення + ремонт</div>
 
                 <div style="color:#00e5ff;font-weight:700;margin:8px 0 4px 0;">⚔️ ОСНОВНЫЕ БОЕВЫЕ ЗАДАЧИ:</div>
@@ -185,21 +185,21 @@ function buildMechBattalionViz() {
                 <div>• <span style="color:#e57373;">Разведка</span> — збір інформації + бойове забезпечення</div>
                 <div>• <span style="color:#ba68c8;">Маневр</span> — швидке переміщення + охоплення флангів</div>
 
-                <div style="color:#ffc107;font-weight:700;margin:8px 0 4px 0;">🚛 ОСНОВНАЯ ТЕХНИКА:</div>
-                <div>• <span style="color:#4caf50;">БМП-2/БМП-1</span> — бойові машини піхоти (3 роти)</div>
-                <div>• <span style="color:#ff9800;">БТР-4/БТР-3</span> — бронетранспортери (резерв)</div>
-                <div>• <span style="color:#f44336;">Т-72АМТ/Т-64БМ</span> — основні бойові танки</div>
+                <div style="color:#ffc107;font-weight:700;margin:8px 0 4px 0;">🚛 ОСНОВНАЯ ТЕХНИКА (АКТУАЛЬНАЯ УКРАИНСКАЯ):</div>
+                <div>• <span style="color:#4caf50;">БМП-1/БМП-2</span> — основні БМП (більшість)</div>
+                <div>• <span style="color:#ff9800;">БТР-4/БТР-3</span> — бронетранспортери (деякі)</div>
+                <div>• <span style="color:#f44336;">Т-64БМ/Т-72АМТ</span> — бойові танки</div>
                 <div>• <span style="color:#ff9800;">2С3/М777</span> — самохідна артилерія</div>
-                <div>• <span style="color:#9c27b0;">Игла/Стріла-10</span> — ПЗРК для ПВО</div>
-                <div>• <span style="color:#00bcd4;">Stugna-P/Javelin</span> — протитанкові ракети</div>
-                <div>• <span style="color:#00bcd4;">Bayraktar/FPV</span> — ударні дрони</div>
+                <div>• <span style="color:#9c27b0;">Игла + Bayraktar</span> — ППО + дрони</div>
+                <div>• <span style="color:#00bcd4;">Stugna-P + Javelin + NLAW</span> — протитанкові комплекси</div>
+                <div>• <span style="color:#00bcd4;">Bayraktar + FPV</span> — ударні + бойові дрони</div>
             </div>
             <div style="border-top:1px solid #0f3460;margin-top:6px;padding-top:6px;color:#888;font-size:9px;">
                 <strong>Численность:</strong> 400-500 военнослужащих<br>
                 <strong>Мобильность:</strong> Швидке переміщення + бойовий маневр<br>
-                <strong>Огневая мощь:</strong> Комбінація танків + БМП + артилерії + дрони<br>
-                <strong>Тактика:</strong> Швидкий наступ + глибокий прорив + дронова підтримка<br>
-                <strong>Особенности:</strong> Інтеграція західної техніки + сучасні ПТРК + БпАК
+                <strong>Огневая мощь:</strong> Танки + БМП + артилерія + дрони<br>
+                <strong>Тактика:</strong> Комбінований наступ + дронова підтримка<br>
+                <strong>Реальность 2024:</strong> Інтеграція західної зброї + масове використання FPV
             </div>
         </div>`,
         iconAnchor: [0, 0],

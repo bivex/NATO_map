@@ -157,7 +157,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
 // --- State ---
 let currentTool = 'select';
 let selectedSymbol = null;
-let placedMarkers = [];
+window.placedMarkers = [];
 let drawingPoints = [];
 let drawingPolyline = null;
 let gridVisible = false;
@@ -589,6 +589,10 @@ document.getElementById('tacticSelect').addEventListener('change', (e) => {
         buildMedicalCompanyViz();
     } else if (value === 'mech-battalion') {
         buildMechBattalionViz();
+    } else if (value === 'mech-company') {
+        buildMechCompanyViz();
+    } else if (value === 'mech-platoon') {
+        buildMechPlatoonViz();
     } else if (value === 'export') {
         // Handle PNG export
         alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
