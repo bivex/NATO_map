@@ -8,6 +8,10 @@ function buildSpecialOpsViz() {
     // Clear existing
     clearMap();
 
+    // --- Animated markers storage ---
+    const animations = [];
+    window._specialOpsAnimations = animations;
+
     zoneLabel(49.70, 37.55, '───── 7. СПЕЦОПЕРАЦІЇ І ДИВЕРСІЇ ─────', COLORS.PNK, 12);
 
     // =====================================================
