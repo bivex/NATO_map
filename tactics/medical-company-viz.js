@@ -8,6 +8,10 @@ function buildMedicalCompanyViz() {
     // Clear existing
     clearMap();
 
+    // --- Animated markers storage ---
+    const animations = [];
+    window._medicalCompanyAnimations = animations;
+
     zoneLabel(49.5, 37.0, '───── МЕДИЦИНСКАЯ РОТА ─────', COLORS.PNK, 12);
     zoneLabel(49.3, 37.0, 'ОРГАНИЗАЦИЯ МЕДИЦИНСКОЙ СЛУЖБЫ ВОИНСКОЙ ЧАСТИ', COLORS.PNK, 9);
 
