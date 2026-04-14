@@ -1,0 +1,3 @@
+[submodule "open-streetmap-mcp"]
+	path = open-streetmap-mcp
+	url = https://github.com/jagan-shanmugam/open-streetmap-mcp
