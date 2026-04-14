@@ -597,6 +597,8 @@ document.getElementById('tacticSelect').addEventListener('change', (e) => {
         buildLogisticsViz();
     } else if (value === 'village-defense') {
         buildVillageDefenseViz();
+    } else if (value === 'forest-battle') {
+        buildForestBattleViz();
     } else if (value === 'export') {
         // Handle PNG export
         alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
