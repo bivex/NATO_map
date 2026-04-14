@@ -593,6 +593,8 @@ document.getElementById('tacticSelect').addEventListener('change', (e) => {
         buildMechCompanyViz();
     } else if (value === 'mech-platoon') {
         buildMechPlatoonViz();
+    } else if (value === 'logistics') {
+        buildLogisticsViz();
     } else if (value === 'export') {
         // Handle PNG export
         alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
