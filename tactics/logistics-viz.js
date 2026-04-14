@@ -185,7 +185,7 @@ function buildLogisticsViz() {
     // =========================================================
     // COMMUNICATIONS NODE
     // =========================================================
-    mk(49.20, 37.70, `<rect x="5" y="8" width="40" height="32" fill="${COLORS.CYN}44" stroke="${COLORS.CYN}" stroke-width="3"/><path d="M20,36 Q20,15 25,12 Q30,15 30,36" fill="none" stroke="${COLORS.CYN}" stroke-width="2"/><line x1="15" y1="36" x2="35" y2="36" stroke="${COLORS.CYN}" stroke-width="2"/><text x="25" y="6" text-anchor="middle" fill="${COLORS.CYN}" font-size="6" font-weight="bold">ВУЗОЛ ЗВ`ЯЗКУ</text>`, 'СВЯЗЬ', 'Вузол зв\'язку бригади\nрадіо + супутник + дротовий\nкоординація постачання\nASIST / Kropyva системи', [85,85]);
+    mk(49.20, 37.70, `<rect x="5" y="8" width="40" height="32" fill="${COLORS.CYN}44" stroke="${COLORS.CYN}" stroke-width="3"/><path d="M20,36 Q20,15 25,12 Q30,15 30,36" fill="none" stroke="${COLORS.CYN}" stroke-width="2"/><line x1="15" y1="36" x2="35" y2="36" stroke="${COLORS.CYN}" stroke-width="2"/><text x="25" y="6" text-anchor="middle" fill="${COLORS.CYN}" font-size="6" font-weight="bold">ВУЗОЛ ЗВ&#x27;ЯЗКУ</text>`, 'СВЯЗЬ', 'Вузол зв\'язку бригади\nрадіо + супутник + дротовий\nкоординація постачання\nASIST / Kropyva системи', [85,85]);
 
     circ(49.20, 37.70, 15000, COLORS.CYN, 0.03);
 
