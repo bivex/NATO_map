@@ -601,6 +601,8 @@ document.getElementById('tacticSelect').addEventListener('change', (e) => {
         buildForestBattleViz();
     } else if (value === '81-aemb') {
         build81AEMBViz();
+    } else if (value === '91-support') {
+        build91SupportBrigadeViz();
     } else if (value === 'export') {
         // Handle PNG export
         alert('Експорт PNG: використовуйте скріншот браузера (Ctrl+Shift+S або Cmd+Shift+4)');
