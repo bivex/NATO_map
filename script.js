@@ -599,6 +599,8 @@ document.getElementById('tacticSelect').addEventListener('change', (e) => {
         buildVillageDefenseViz();
     } else if (value === 'forest-battle') {
         buildForestBattleViz();
+    } else if (value === 'izyum-ambush') {
+        buildIzyumAmbushViz();
     } else if (value === '81-aemb') {
         build81AEMBViz();
     } else if (value === '91-support') {
